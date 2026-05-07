@@ -6,7 +6,7 @@ const TrailMaps = ({ trails, setSelectedTrail }) => {
       <APIProvider apiKey={import.meta.env.VITE_GOOGLE_MAPS_API_KEY}>
         
         <Map
-          style={{ width: "100%", height: "100%" }}
+          style={{ width: "143%", height: "33%" }}
           defaultCenter={{ lat: 45.52, lng: -122.67 }}
           defaultZoom={10}
         >
