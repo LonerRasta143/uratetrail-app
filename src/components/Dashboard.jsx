@@ -1,14 +1,16 @@
 import { useEffect, useState } from "react";
 import { getTrails } from "../services/trailService.js";
 import TrailMaps from "./TrailMaps.jsx";
-
+import commentService from "../services/commentService.js";
 const Dashboard = () => {
-  const [trails, setTrails] = useState([]);
-  const [selectedTrail, setSelectedTrail] = useState(null);
-  const [searchQuery, setSearchQuery] = useState("");
-  const [rating, setRating] = useState(0);
-  const [comment, setComment] = useState("");
-
+const [trails, setTrails] = useState([]);
+const [selectedTrail, setSelectedTrail] = useState(null);
+const [searchQuery, setSearchQuery] = useState("");
+const [rating, setRating] = useState(0);
+const [comment, setComment] = useState("");
+const [comments, setComments] = useState([]);
+const [googlePhotos, setGooglePhotos] = useState([]);
+{/* FetchTrail Function*/}
   useEffect(() => {
     const fetchTrails = async () => {
       try {
@@ -22,23 +24,101 @@ const Dashboard = () => {
     fetchTrails();
   }, []);
 
+{/* FetchComments Function*/}
+  useEffect(() => {
+  const fetchComments = async () => {
+    if (!selectedTrail?._id) return;
+
+    try {
+      const data = await commentService.getCommentsByTrailId(selectedTrail._id);
+      setComments(data);
+    } catch (err) {
+      console.error(err.message);
+    }
+  };
+
+  fetchComments();
+}, [selectedTrail]);
+
   const filteredTrails = trails.filter((trail) =>
     trail.name.toLowerCase().includes(searchQuery.toLowerCase())
   );
+  const fetchGoogleTrailPhotos = async (trailName) => {
+  const apiKey = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
 
-  const handleSubmitReview = (e) => {
-    e.preventDefault();
+  try {
+    const response = await fetch(
+      "https://places.googleapis.com/v1/places:searchText",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "X-Goog-Api-Key": apiKey,
+          "X-Goog-FieldMask": "places.displayName,places.photos",
+        },
+        body: JSON.stringify({
+          textQuery: `${trailName} hiking trail`,
+        }),
+      }
+    );
 
-    console.log({
-      trailId: selectedTrail?._id,
-      rating,
-      comment,
+    const data = await response.json();
+
+    const place = data.places?.[0];
+
+    if (!place?.photos) {
+      setGooglePhotos([]);
+      return;
+    }
+
+    const photoUrls = place.photos.slice(0, 4).map((photo) => {
+      return `https://places.googleapis.com/v1/${photo.name}/media?maxWidthPx=600&key=${apiKey}`;
     });
+
+    setGooglePhotos(photoUrls);
+  } catch (error) {
+    console.error("Error fetching Google trail photos:", error);
+    setGooglePhotos([]);
+  }
+};
+
+const handleSearch = () => {
+  const foundTrail = trails.find((trail) =>
+    trail.name.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
+  if (foundTrail) {
+    setSelectedTrail(foundTrail);
+    fetchGoogleTrailPhotos(foundTrail.name);
+  } else {
+    setGooglePhotos([]);
+    alert("No trail found. Make sure this trail exists in the database.");
+  }
+};
+
+ const handleSubmitReview = async (e) => {
+  e.preventDefault();
+
+  if (!selectedTrail) {
+    alert("Please select a trail first.");
+    return;
+  }
+
+  try {
+    const newComment = await commentService.createComment(selectedTrail._id, {
+      text: comment,
+      rating: rating,
+    });
+
+    setComments([newComment, ...comments]);
 
     setRating(0);
     setComment("");
-  };
-
+  } catch (err) {
+    console.error(err.message);
+    alert("Could not save comment.");
+  }
+};
   return (
     <main style={{ padding: "1.5rem", backgroundColor: "#f4f7f4" }}>
       {/* Search */}
@@ -51,7 +131,9 @@ const Dashboard = () => {
           style={inputStyle}
         />
 
-        <button style={buttonStyle}>Search</button>
+        <button type="button" style={buttonStyle} onClick={handleSearch}>
+          Search
+        </button>
       </section>
 
  
@@ -78,10 +160,10 @@ const Dashboard = () => {
         </div>
 
         <div style={cardStyle}>
-          <h2>Info</h2>
+          <h2>Info:</h2>
           <p>
             <strong>Location:</strong>{" "}
-            {selectedTrail?.location || "No trail selected"}
+            {selectedTrail?.address || "No trail selected"}
           </p>
           <p>
             <strong>Description:</strong>{" "}
@@ -91,11 +173,71 @@ const Dashboard = () => {
       </section>
 
       {/* PHOTOS */}
-      <section style={{ ...cardStyle, minHeight: "180px", marginBottom: "1rem" }}>
-        <h2>Photos</h2>
-        <p>Trail photos will display here.</p>
-      </section>
+<section style={{ marginTop: "1rem" }}>
+  <h3>Photos</h3>
 
+  <div
+    style={{
+      display: "grid",
+      gridTemplateColumns: "1fr 1fr",
+      gap: "1rem",
+      alignItems: "start",
+    }}
+  >
+    {/* Database photo */}
+    <div>
+      <h4>Database Photo</h4>
+
+      {selectedTrail?.imageUrl ? (
+        <img
+          src={selectedTrail.imageUrl}
+          alt={selectedTrail.name}
+          style={{
+            width: "100%",
+            aspectRatio: "16 / 9",
+            objectFit: "cover",
+            borderRadius: "12px",
+            display: "block",
+          }}
+        />
+      ) : (
+        <p>No database photo available</p>
+      )}
+    </div>
+
+    {/* Google photos */}
+    <div>
+      <h4>Google Photos</h4>
+
+      {googlePhotos.length > 0 ? (
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "1fr 1fr",
+            gap: "0.75rem",
+          }}
+        >
+          {googlePhotos.map((photoUrl, index) => (
+            <img
+              key={index}
+              src={photoUrl}
+              alt={`${selectedTrail?.name || "Trail"} Google photo ${index + 1}`}
+              style={{
+                width: "100%",
+                aspectRatio: "1 / 1",
+                objectFit: "cover",
+                borderRadius: "12px",
+                display: "block",
+              }}
+            />
+          ))}
+        </div>
+      ) : (
+        <p>No Google photos found</p>
+      )}
+    </div>
+  </div>
+</section>
       {/* REVIEWS HEADER */}
       <section style={cardStyle}>
         <h2>Reviews / Comments</h2>
@@ -156,6 +298,36 @@ const Dashboard = () => {
           >
             Leave a Review
           </button>
+          <div style={{ marginTop: "1.5rem" }}>
+  <h3>Saved Comments</h3>
+
+  {comments.length > 0 ? (
+    comments.map((savedComment) => (
+      <div
+        key={savedComment._id}
+        style={{
+          borderTop: "1px solid #ddd",
+          paddingTop: "0.75rem",
+          marginTop: "0.75rem",
+        }}
+      >
+        <p>
+          <strong>Rating:</strong> {"★".repeat(savedComment.rating)}
+        </p>
+
+        <p>{savedComment.text}</p>
+
+        {savedComment.user?.username && (
+          <p style={{ fontSize: "0.85rem", color: "#666" }}>
+            By: {savedComment.user.username}
+          </p>
+        )}
+      </div>
+    ))
+  ) : (
+    <p>No comments yet.</p>
+  )}
+</div>
         </form>
 
         <aside style={cardStyle}>
