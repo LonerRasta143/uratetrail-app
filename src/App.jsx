@@ -1,5 +1,6 @@
 import { useContext } from "react";
 import { UserContext } from "./context/UserContext";
+import TrailIndex from "./pages/TrailIndex.jsx";
 
 import { Routes, Route } from "react-router-dom";
 
@@ -20,7 +21,7 @@ const App = () => {
         <Route path="/sign-up" element={<SignUpForm />} />
         <Route path="/sign-in" element={<SignInForm />} />
         <Route path="/dashboard" element={<Dashboard />} />
-        <Route path="/trails" element={<Trails />} />
+        <Route path="/trails" element={<TrailIndex />} />
       </Routes>
     </div>
   );
