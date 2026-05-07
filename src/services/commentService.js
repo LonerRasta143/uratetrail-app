@@ -24,6 +24,22 @@ const commentService = {
       throw error;
     }
   },
+  deleteComment: async (commentId) => {
+   const response = await fetch(`${API_BASE_URL}/comments/${commentId}`, {
+    method: "DELETE",
+    headers: {
+      Authorization: `Bearer ${localStorage.getItem("token")}`,
+    },
+  });
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(data.err || "Failed to delete comment");
+  }
+
+  return data;
+},
 
   createComment: async (trailId, commentData) => {
     try {

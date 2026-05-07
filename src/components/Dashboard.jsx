@@ -119,6 +119,18 @@ const handleSearch = () => {
     alert("Could not save comment.");
   }
 };
+const handleDeleteComment = async (commentId) => {
+  try {
+    await commentService.deleteComment(commentId);
+
+    setComments((prevComments) =>
+      prevComments.filter((comment) => comment._id !== commentId)
+    );
+  } catch (err) {
+    console.error(err.message);
+    alert("Could not delete comment.");
+  }
+};
   return (
     <main style={{ padding: "1.5rem", backgroundColor: "#f4f7f4" }}>
       {/* Search */}
@@ -173,7 +185,7 @@ const handleSearch = () => {
       </section>
 
       {/* PHOTOS */}
-<section style={{ marginTop: "1rem" }}>
+<section style={{ marginTop: "1rem", ...cardStyle, backgroundColor: "#ffffff" }}>
   <h3>Photos</h3>
 
   <div
@@ -186,7 +198,7 @@ const handleSearch = () => {
   >
     {/* Database photo */}
     <div>
-      <h4>Database Photo</h4>
+      <h4>Users Photo</h4>
 
       {selectedTrail?.imageUrl ? (
         <img
@@ -239,8 +251,8 @@ const handleSearch = () => {
   </div>
 </section>
       {/* REVIEWS HEADER */}
-      <section style={cardStyle}>
-        <h2>Reviews / Comments</h2>
+      <section style={{ ...cardStyle, marginTop: "1rem" }}>
+        <h2>Reviews</h2>
       </section>
 
       {/* Cmment section*/}
@@ -264,7 +276,7 @@ const handleSearch = () => {
                   background: "none",
                   border: "none",
                   cursor: "pointer",
-                  color: star <= rating ? "#f5b301" : "#ccc",
+                  color: star <= rating ? "#117019" : "#ccc",
                 }}
               >
                 ★
@@ -280,8 +292,8 @@ const handleSearch = () => {
               width: "100%",
               minHeight: "100px",
               padding: "0.75rem",
-              borderRadius: "8px",
-              border: "1px solid #ccc",
+              borderRadius: "25px",
+              border: "1px solid #08552f",
             }}
           />
 
@@ -293,13 +305,13 @@ const handleSearch = () => {
               marginTop: "1rem",
               width: "100%",
               backgroundColor:
-                !selectedTrail || !comment || rating === 0 ? "#999" : "#2e7d32",
+                !selectedTrail || !comment || rating === 0 ? "#0b381e" : "#2e7d32",
             }}
           >
-            Leave a Review
+            Submit Review
           </button>
           <div style={{ marginTop: "1.5rem" }}>
-  <h3>Saved Comments</h3>
+  <h3>Reviews:</h3>
 
   {comments.length > 0 ? (
     comments.map((savedComment) => (
@@ -316,6 +328,17 @@ const handleSearch = () => {
         </p>
 
         <p>{savedComment.text}</p>
+        <button
+  type="button"
+  onClick={() => handleDeleteComment(savedComment._id)}
+  style={{
+    ...buttonStyle,
+    backgroundColor: "#b00020",
+    marginTop: "0.5rem",
+  }}
+>
+  Delete
+</button>
 
         {savedComment.user?.username && (
           <p style={{ fontSize: "0.85rem", color: "#666" }}>
@@ -326,39 +349,12 @@ const handleSearch = () => {
     ))
   ) : (
     <p>No comments yet.</p>
+    
   )}
 </div>
         </form>
 
-        <aside style={cardStyle}>
-          <div
-            style={{
-              height: "90px",
-              border: "1px solid #999",
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-              marginBottom: "1rem",
-            }}
-          >
-            User photos
-          </div>
-
-          <button style={{ ...buttonStyle, width: "100%" }}>
-            Upload Photo
-          </button>
-
-          <button
-            style={{
-              ...buttonStyle,
-              width: "100%",
-              marginTop: "1rem",
-              backgroundColor: "#b00020",
-            }}
-          >
-            Delete Review
-          </button>
-        </aside>
+       
       </section>
     </main>
   );
