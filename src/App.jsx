@@ -8,6 +8,7 @@ import SignInForm from "./components/SignInForm.jsx";
 import Navbar from "./components/Navbar.jsx";
 import Landing from "./components/Landing.jsx";
 import Dashboard from "./components/Dashboard.jsx";
+import TrailIndex from "./pages/TrailIndex.jsx";
 
 const App = () => {
   const { user } = useContext(UserContext);
@@ -20,7 +21,7 @@ const App = () => {
         <Route path="/sign-up" element={<SignUpForm />} />
         <Route path="/sign-in" element={<SignInForm />} />
         <Route path="/dashboard" element={<Dashboard />} />
-        <Route path="/trails" element={<Trails />} />
+        <Route path="/trails" element={<TrailIndex />} />
       </Routes>
     </div>
   );
