@@ -1,3 +1,5 @@
+import photo from "../assets/hiking.jpg";
+
 const Landing = () => {
   return (
     <main
@@ -11,8 +13,7 @@ const Landing = () => {
         padding: "2rem",
         background: "linear-gradient(to bottom, #dff6e4, #ffffff)",
       }}
-    >
-      <h1
+    ><h1
         style={{
           fontSize: "4rem",
           marginBottom: "1rem",
@@ -21,6 +22,8 @@ const Landing = () => {
       >
         URateTrail
       </h1>
+      <img src={photo} alt=" a group of people hiking" style={{ width: "100%", maxWidth: "1000px", height: "auto" }} />
+      
 
       <p
         style={{
@@ -32,7 +35,7 @@ const Landing = () => {
         }}
       >
         Discover hiking trails, explore interactive maps, and share your
-        experiences with the community. Rate trails, leave comments, and help
+        experiences with the community. Rate trails, leave a review, and help
         fellow hikers find their next adventure.
       </p>
 
