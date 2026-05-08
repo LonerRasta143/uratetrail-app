@@ -1,6 +1,5 @@
 import { useContext } from "react";
 import { UserContext } from "./context/UserContext";
-import TrailIndex from "./pages/TrailIndex.jsx";
 
 import { Routes, Route } from "react-router-dom";
 
