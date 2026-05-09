@@ -1,8 +1,7 @@
 import { useContext } from "react";
 import { UserContext } from "./context/UserContext";
-import TrailIndex from "./pages/TrailIndex.jsx";
 
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, Navigate } from "react-router-dom";
 
 import SignUpForm from "./components/SignUpForm.jsx";
 import SignInForm from "./components/SignInForm.jsx";
@@ -16,12 +15,24 @@ const App = () => {
   return (
     <div>
       <Navbar />
+
       <Routes>
         <Route path="/" element={user ? <Dashboard /> : <Landing />} />
-        <Route path="/sign-up" element={<SignUpForm />} />
-        <Route path="/sign-in" element={<SignInForm />} />
-        <Route path="/dashboard" element={<Dashboard />} />
-        <Route path="/trails" element={<TrailIndex />} />
+
+        <Route
+          path="/sign-up"
+          element={user ? <Navigate to="/dashboard" /> : <SignUpForm />}
+        />
+
+        <Route
+          path="/sign-in"
+          element={user ? <Navigate to="/dashboard" /> : <SignInForm />}
+        />
+
+        <Route
+          path="/dashboard"
+          element={user ? <Dashboard /> : <Navigate to="/sign-in" />}
+        />
       </Routes>
     </div>
   );

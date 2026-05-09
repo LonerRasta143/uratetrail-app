@@ -22,17 +22,20 @@ const SignUpForm = () => {
   };
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
+  e.preventDefault();
 
-    try {
-      const user = await signUp(formData);
-      setUser(user);
-      navigate("/");
-    } catch (error) {
-      console.error(error);
-      setMessage(error.message);
-    }
-  };
+  try {
+    const user = await signUp(formData);
+    setUser(user);
+
+    navigate("/dashboard", {
+      state: { message: "Account created successfully! Welcome to URateTrail." },
+    });
+  } catch (error) {
+    console.error(error);
+    setMessage(error.message);
+  }
+};
 
   const isFormInvalid = () => {
     return !(username && password && password === passwordConf);

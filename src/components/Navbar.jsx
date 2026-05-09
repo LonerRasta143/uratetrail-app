@@ -5,12 +5,21 @@ import { Link, useNavigate } from "react-router-dom";
 const Navbar = () => {
   const { user, setUser } = useContext(UserContext);
   const navigate = useNavigate();
+  
 
   const handleLogOut = () => {
     localStorage.removeItem("token");
     setUser(null);
     navigate("/");
   };
+
+  const displayName =
+    user?.username ||
+    user?.name ||
+    user?.user?.username ||
+    user?.user?.name ||
+    user?.payload?.username ||
+    "User";
 
   return (
     <nav
@@ -60,17 +69,17 @@ const Navbar = () => {
                 Dashboard
               </Link>
 
-              
               <span
                 style={{
                   color: "#d7f5dd",
                   fontWeight: "bold",
                 }}
               >
-                Hi, {user.username}
+                Hi, {displayName}
               </span>
 
               <button
+                type="button"
                 onClick={handleLogOut}
                 style={{
                   backgroundColor: "#ffffff",

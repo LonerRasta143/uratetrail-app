@@ -17,29 +17,34 @@ const commentService = {
 
       return data;
     } catch (error) {
-      console.error(
-        `Error fetching comments for trail ${trailId}:`,
+      console.error(`Error fetching comments for trail ${trailId}:`,
         error.message
       );
       throw error;
     }
   },
   deleteComment: async (commentId) => {
-   const response = await fetch(`${API_BASE_URL}/comments/${commentId}`, {
-    method: "DELETE",
-    headers: {
-      Authorization: `Bearer ${localStorage.getItem("token")}`,
-    },
-  });
+    try {
+      const response = await fetch(`${API_BASE_URL}/comments/${commentId}`, {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
 
-  const data = await response.json();
+      const data = await response.json();
 
-  if (!response.ok) {
-    throw new Error(data.err || "Failed to delete comment");
-  }
+      if (!response.ok) {
+        throw new Error(data.err || "Failed to delete comment");
+      }
 
-  return data;
-},
+      return data;
+    } catch (error) {
+      console.error(`Error deleting comment ${commentId}:`, error.message);
+      throw error;
+    }
+  },
+
 
   createComment: async (trailId, commentData) => {
     try {
@@ -65,6 +70,32 @@ const commentService = {
     } catch (error) {
       console.error(
         `Error creating comment for trail ${trailId}:`,
+        error.message
+      );
+      throw error;
+    }
+  },
+  updateComment: async (commentId, commentData) => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/comments/${commentId}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+        body: JSON.stringify(commentData),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.err || "Failed to update comment");
+      }
+
+      return data;
+    } catch (error) {
+      console.error(
+        `Error updating comment ${commentId}:`,
         error.message
       );
       throw error;

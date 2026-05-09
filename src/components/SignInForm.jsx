@@ -20,19 +20,20 @@ const SignInForm = () => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+ const handleSubmit = async (e) => {
+  e.preventDefault();
 
-    try {
-      const user = await signIn(formData);
-      setUser(user);
-      navigate("/dashboard");
-    } catch (error) {
-      console.error(error);
-      setMessage(error.message);
-    }
-  };
+  try {
+    const user = await signIn(formData);
+    setUser(user);
 
+    sessionStorage.setItem("statusMessage", "Signed in successfully!");
+    navigate("/dashboard");
+  } catch (error) {
+    console.error(error);
+    setMessage(error.message);
+  }
+};
   const isFormInvalid = () => {
     return !(username && password);
   };
@@ -99,6 +100,7 @@ const SignInForm = () => {
 
           <div style={{ display: "flex", gap: "1rem" }}>
             <button
+              type="submit"
               disabled={isFormInvalid()}
               style={{
                 ...buttonStyle,
