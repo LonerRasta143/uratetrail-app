@@ -8,6 +8,7 @@ import SignInForm from "./components/SignInForm.jsx";
 import Navbar from "./components/Navbar.jsx";
 import Landing from "./components/Landing.jsx";
 import Dashboard from "./components/Dashboard.jsx";
+import Trails from "./components/Trails.jsx";
 
 const App = () => {
   const { user } = useContext(UserContext);
@@ -33,7 +34,14 @@ const App = () => {
           path="/dashboard"
           element={user ? <Dashboard /> : <Navigate to="/sign-in" />}
         />
+         <Route
+        path="/trails"
+        element={user ? <Trails /> : <Navigate to="/sign-in" />}
+      />
       </Routes>
+
+     
+     
     </div>
   );
 };

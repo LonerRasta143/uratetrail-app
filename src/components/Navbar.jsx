@@ -68,6 +68,9 @@ const Navbar = () => {
               <Link to="/dashboard" style={linkStyle}>
                 Dashboard
               </Link>
+                <Link to="/trails" style={linkStyle}>
+                  Trails
+                </Link>
 
               <span
                 style={{
@@ -75,6 +78,7 @@ const Navbar = () => {
                   fontWeight: "bold",
                 }}
               >
+                
                 Hi, {displayName}
               </span>
 

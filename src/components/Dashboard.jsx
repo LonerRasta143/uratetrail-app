@@ -79,7 +79,7 @@ const Dashboard = () => {
 
   const fetchGoogleTrailPhotos = async (trailName) => {
     const apiKey = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
-
+//Fetch google photos
     try {
       const response = await fetch(
         "https://places.googleapis.com/v1/places:searchText",
@@ -91,7 +91,7 @@ const Dashboard = () => {
             "X-Goog-FieldMask": "places.displayName,places.photos",
           },
           body: JSON.stringify({
-            textQuery: `${trailName} hiking trail`,
+            textQuery: `${trailName} hiking trails`,
           }),
         }
       );
