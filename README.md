@@ -53,6 +53,10 @@ This repository contains the **frontend client application** built with **React*
 - Mongoose
 - JWT Authentication
 
+### WCAG 2.1 Result:
+
+![WCAG Results](src/assets/wcag.jpg)
+
 ---
 
 ## Installation
