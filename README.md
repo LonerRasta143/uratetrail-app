@@ -1,5 +1,7 @@
 # URateTrail - Frontend
 
+![Landing page](src/assets/uratetraillander.JPG)
+
 URateTrail is a community-driven hiking web application that allows users to explore hiking trails, view locations on an interactive map, and share experiences through ratings and comments.
 
 This repository contains the **frontend client application** built with **React** and **Vite**. The application communicates with a custom **Express + MongoDB backend API** using RESTful routes and includes user authentication, trail management, and interactive map functionality powered by the Google Maps API.
@@ -21,13 +23,13 @@ This repository contains the **frontend client application** built with **React*
 
 ## Live Demo
 
- Coming Soon
+ (https://uratetrail.netlify.app)
 ---
 
 ## Team
 
-- William
-- Carlos
+- William Frontend (https://github.com/LonerRasta143/uratetrail-app-front-end)
+- Carlos Backend: (https://github.com/lecharles/uratetrail-app-back-end/tree/main)
 
 ---
 
